@@ -1,36 +1,46 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Mental Health Tracker
 
-## Getting Started
+## Overview
+The Mental Health Tracker is a project designed to monitor and support users' emotional well-being by logging mood data, writing journals, setting goals, and providing automated responses. Built using Supabase for data storage and n8n for workflow automation, this project aims to offer a simple yet effective tool for mental health management.
 
-First, run the development server:
+## Features
+- **Mood Logging**: Users can submit their mood (e.g., 1 for happy, 2 for sad), intensity (1-10), cause, and notes via a webhook.
+- **Data Storage**: Data is stored in a Supabase `moods` table with columns: `id`, `user_id`, `mood`, `intensity`, `cause`, `notes`, `tags`, `created_at`, `updated_at`, and `ai_analysis`.
+- **Automated Response**: A mock AI analysis generates supportive messages based on mood, intensity, and cause (e.g., "Great to hear you're happy!" for mood 1).
+- **Webhook Integration**: The n8n workflow triggers on webhook calls, processes data, and updates the database.
+- **Profile Setup**: Users can create and manage their profiles, including personal details and preferences.
+- **Magic Link Login**: Implements secure, passwordless login using Supabase magic links for user authentication.
+- **Set Goals**: Allows users to define and track personal mental health goals (e.g., meditate daily, journal weekly).
+- **Journals**: Provides a space for users to write and store journal entries linked to their mood data.
+- **Dashboard with Quick Stats**: Displays an overview of mood trends, goal progress, and habit streaks in a user-friendly interface.
+- **Habit Streaks**: Tracks consistent habits (e.g., exercise, meditation) with streak counters.
+- **Sleep Analysis**: Logs and analyzes sleep patterns to correlate with mood and well-being.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Technologies Used
+- **Supabase**: For database management, REST API integration, and authentication (magic links).
+- **n8n**: For workflow automation, including webhook handling, data routing, and database updates.
+- **GitHub**: For version control and project hosting.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Installation and Setup
+1. Clone the repository: `git clone https://github.com/AfshanN754/mental-health-tracker.git`
+2. Set up Supabase with a `moods` table and obtain an API key.
+3. Install n8n locally and import the `workflow.json` file.
+4. Update the Supabase URL and API key in the n8n workflow (Update Mood Entry node).
+5. Test with a POST request to the webhook URL (e.g., `http://localhost:5678/webhook-test/mood-tracker`).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Usage
+- Send a JSON payload to the webhook, e.g.:
+  ```json
+  {
+    "id": "gen_random_uuid()",
+    "user_id": "123",
+    "mood": 1,
+    "intensity": 5,
+    "cause": "work",
+    "date": "2025-08-01"
+  }
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Limitations
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- The AI logic is currently mocked due to API quota limits (e.g., OpenAI). Future integration with a real AI API is planned.
+- The workflow relies on local n8n setup and Supabase connectivity.
