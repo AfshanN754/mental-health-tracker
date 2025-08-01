@@ -1,0 +1,250 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "mood-tracker",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -352,
+        -32
+      ],
+      "id": "7eea0b1e-5f2d-404c-918e-5cad0f211b9b",
+      "name": "Webhook",
+      "webhookId": "71ddbe67-eb3c-455a-af39-543a32a71245"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.mood === 1 }}",
+                    "rightValue": "happy",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "4cc6d47f-549b-40e7-b1d8-817eb66a8949"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "c1356804-88e3-4c51-85c9-d1d1c67b7463",
+                    "leftValue": "={{ $json.mood === 2 }}",
+                    "rightValue": "sad",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "247a440a-1987-478e-bd87-9281f1d7930c",
+                    "leftValue": "={{ $json.mood === 3 }}",
+                    "rightValue": "neutral",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "5e188d93-1fe6-4c9a-acd0-9bd4b7a4c045",
+                    "leftValue": "={{ $json.mood === 4 }}",
+                    "rightValue": "worried",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        208,
+        -96
+      ],
+      "id": "5ad3d860-f90e-4f8e-915d-f2a137d8784a",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{\n  json: {\n    ai_analysis: $json.mood === 1 \n      ? `Great to hear you're happy with intensity ${$json.intensity}! Keep it up!` \n      : ($json.mood === 2 \n        ? `I'm here for you with intensity ${$json.intensity}, consider the cause: ${$json.cause}` \n        : \"Take care, support is available.\")\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        416,
+        -272
+      ],
+      "id": "5f7d5d67-1a4c-4552-85fd-ca4bcd415bf6",
+      "name": "Mock AI Response"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://rivyzavsxmtoxmbblyix.supabase.co/rest/v1/moods?id=eq.{{ $json.id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdnl6YXZzeG10b3htYmJseWl4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMwMDU1NDEsImV4cCI6MjA2ODU4MTU0MX0.HSZm2XaxjxzKUD8NPJiKEaVttWIwujKZ_5D7gq-frp4"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpdnl6YXZzeG10b3htYmJseWl4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMwMDU1NDEsImV4cCI6MjA2ODU4MTU0MX0.HSZm2XaxjxzKUD8NPJiKEaVttWIwujKZ_5D7gq-frp4"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"id\": \"gen_random_uuid()\",\n  \"user_id\": \"{{ $json.user_id }}\",\n  \"mood\": \"{{ $json.mood }}\",\n  \"intensity\": \"{{ $json.intensity }}\",\n  \"cause\": \"{{ $json.cause }}\",\n  \"date\": \"{{ $json.date }}\",\n  \"ai_analysis\": {{ $node['Mock AI Response'].json['ai_analysis'] }}\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        624,
+        -272
+      ],
+      "id": "c3b55bd6-4c83-48fc-816b-9c866ef7e42b",
+      "name": "Update Mood Entry"
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={ \"status\": \"success\", \"ai_analysis\": \"{{ $node['Update Mood Entry'].json.ai_analysis }}\" }",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        832,
+        -272
+      ],
+      "id": "ab0456cc-9f33-4f80-85b0-1a8c0f90c4a5",
+      "name": "Update Mood Entry1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Mock AI Response",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [],
+        [],
+        []
+      ]
+    },
+    "Mock AI Response": {
+      "main": [
+        [
+          {
+            "node": "Update Mood Entry",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Mood Entry": {
+      "main": [
+        [
+          {
+            "node": "Update Mood Entry1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "baab4c2a-a820-41b9-ab6d-ca53271c8026",
+  "meta": {
+    "instanceId": "f5066f7800cdca970cbc6aca8bfa4e417246ae3fafb4988bf1bf3c26d3f47e37"
+  },
+  "id": "jMZ3bnnIdcLhZHxL",
+  "tags": []
+}
